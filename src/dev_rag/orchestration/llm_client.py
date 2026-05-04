@@ -19,7 +19,7 @@ class LLMClient:
     def __init__(
         self,
         api_base_url: str = "http://172.19.0.1:1234/v1",
-        model_name: str = "google/gemma-4-26b-a4b",
+        model_name: str = "unsloth/gemma-4-26b-a4b-it",
         timeout_seconds: float = 60.0,
         api_key: str = "lm-studio",
     ) -> None:

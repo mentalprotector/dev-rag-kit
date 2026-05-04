@@ -75,7 +75,7 @@ QDRANT_URL=http://localhost:6333
 QDRANT_COLLECTION=dev_rag_docs
 EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
 LLM_API_BASE_URL=http://localhost:1234/v1
-LLM_MODEL_NAME=google/gemma-4-26b-a4b
+LLM_MODEL_NAME=unsloth/gemma-4-26b-a4b-it
 CHUNK_MANIFEST_PATH=data/chunks.jsonl
 ```
 

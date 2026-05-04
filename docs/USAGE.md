@@ -91,7 +91,7 @@ LM Studio must expose an OpenAI-compatible API. Configure:
 
 ```env
 LLM_API_BASE_URL=http://YOUR_LM_STUDIO_HOST:1234/v1
-LLM_MODEL_NAME=google/gemma-4-26b-a4b
+LLM_MODEL_NAME=unsloth/gemma-4-26b-a4b-it
 ```
 
 Run:
