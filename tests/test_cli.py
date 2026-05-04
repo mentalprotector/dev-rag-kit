@@ -3,6 +3,7 @@ from pathlib import Path
 from dev_rag.cli import build_parser
 from dev_rag.config import load_config
 from dev_rag.ingestion.schemas import Document, DocumentChunk
+from dev_rag.repo_intel.cli import build_parser as build_repo_parser
 from dev_rag.retrieval.manifest import load_chunk_manifest
 
 
@@ -23,6 +24,15 @@ def test_unified_cli_parser_supports_e2e_command() -> None:
 
     assert args.command == "e2e"
     assert args.output == "final_audit_report.json"
+
+
+def test_repo_check_full_parser_supports_output_directory() -> None:
+    parser = build_repo_parser()
+
+    args = parser.parse_args(["full", ".", "--output", ".repo-check"])
+
+    assert args.command == "full"
+    assert args.output == Path(".repo-check")
 
 
 def test_config_loads_chunk_manifest_path() -> None:

@@ -136,16 +136,17 @@ def write_reports(
     project_brief: str,
     security_audit: str,
     findings_json: list[SecurityFinding | dict[str, Any]] | dict[str, Any] | str,
+    output_dir: str | Path | None = None,
 ) -> dict[str, Path]:
-    """Write report artifacts under ``<repo>/.repo-check/`` and return their paths."""
+    """Write report artifacts and return their paths."""
 
-    output_dir = Path(root_path) / ".repo-check"
-    output_dir.mkdir(parents=True, exist_ok=True)
+    destination = Path(output_dir) if output_dir is not None else Path(root_path) / ".repo-check"
+    destination.mkdir(parents=True, exist_ok=True)
 
     paths = {
-        "project_brief": output_dir / "project_brief.md",
-        "security_audit": output_dir / "security_audit.md",
-        "findings_json": output_dir / "findings.json",
+        "project_brief": destination / "project_brief.md",
+        "security_audit": destination / "security_audit.md",
+        "findings_json": destination / "findings.json",
     }
     paths["project_brief"].write_text(project_brief, encoding="utf-8")
     paths["security_audit"].write_text(security_audit, encoding="utf-8")

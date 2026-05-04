@@ -18,6 +18,8 @@ def _print_result(title: str, result: dict[str, object]) -> None:
     reports = result.get("reports")
     if isinstance(reports, dict) and reports:
         for name, path in reports.items():
+            if name == "answer":
+                continue
             print(f"{name}: {path}")
     answer = result.get("answer")
     if answer:
@@ -36,6 +38,7 @@ async def _run(args: argparse.Namespace) -> int:
         root_path=Path(args.root_path),
         question=getattr(args, "question", None),
         force_rebuild=getattr(args, "force", False),
+        output_dir=getattr(args, "output", None),
     )
     _print_result(f"Repo Check: {args.command}", result)
     return 0 if result.get("status") == "ok" else 1
@@ -52,11 +55,23 @@ def build_parser() -> argparse.ArgumentParser:
         sub = subparsers.add_parser(command, help=f"Run {command} workflow")
         sub.add_argument("root_path", help="Repository path to inspect")
         sub.add_argument("--force", action="store_true", help="Rebuild local index")
+        sub.add_argument(
+            "--output",
+            type=Path,
+            default=None,
+            help="Report output directory; defaults to <repo>/.repo-check",
+        )
 
     ask = subparsers.add_parser("ask", help="Ask a question about a repository")
     ask.add_argument("root_path", help="Repository path to inspect")
     ask.add_argument("question", help="Question to answer from the local repository index")
     ask.add_argument("--force", action="store_true", help="Rebuild local index before answering")
+    ask.add_argument(
+        "--output",
+        type=Path,
+        default=None,
+        help=argparse.SUPPRESS,
+    )
 
     web = subparsers.add_parser("web", help="Run browser UI server")
     web.add_argument("--host", default="127.0.0.1", help="Bind host; use 0.0.0.0 for LAN access")

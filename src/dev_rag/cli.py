@@ -130,15 +130,19 @@ def _cmd_chat(args: argparse.Namespace) -> int:
     """Run an interactive RAG chat loop."""
 
     print("Dev RAG Kit. Type 'exit' or 'quit' to stop.")
-    while True:
-        question = input("\nQuestion> ").strip()
-        if question.lower() in {"exit", "quit"}:
-            return 0
-        if not question:
-            continue
-        args.question = question
-        if _cmd_ask(args) != 0:
-            return 1
+    try:
+        while True:
+            question = input("\nQuestion> ").strip()
+            if question.lower() in {"exit", "quit"}:
+                return 0
+            if not question:
+                continue
+            args.question = question
+            if _cmd_ask(args) != 0:
+                return 1
+    except KeyboardInterrupt:
+        print("\nStopped.")
+        return 0
 
 
 def _cmd_evaluate(args: argparse.Namespace) -> int:

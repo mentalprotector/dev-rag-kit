@@ -186,7 +186,13 @@ async def _write_reports(state: AgentState) -> None:
                 [_report_finding(finding) for finding in state.get("findings", [])],
                 _scan_summary_from_state(state),
             )
-        paths = write_reports(root, project_brief, security_audit, state.get("findings", []))
+        paths = write_reports(
+            root,
+            project_brief,
+            security_audit,
+            state.get("findings", []),
+            state.get("output_dir"),
+        )
         state["reports"] = {key: str(value) for key, value in paths.items()}
     except Exception as exc:  # noqa: BLE001
         logger.exception("Error: report generation failed")
@@ -320,6 +326,7 @@ async def run_repo_intel(
     root_path: Path,
     question: str | None = None,
     force_rebuild: bool = False,
+    output_dir: Path | None = None,
 ) -> dict[str, object]:
     """Run the repository intelligence workflow."""
 
@@ -333,6 +340,7 @@ async def run_repo_intel(
         "iteration_count": 0,
         "error_log": [],
         "root_path": str(resolved),
+        "output_dir": str(output_dir.expanduser().resolve()) if output_dir else None,
         "mode": mode,
         "question": question,
         "reports": {},
@@ -341,9 +349,12 @@ async def run_repo_intel(
     try:
         from langgraph.graph import END, StateGraph
 
+        async def tools_node(graph_state: AgentState) -> AgentState:
+            return await _tool_executor_node(graph_state, force_rebuild)
+
         graph = StateGraph(AgentState)
         graph.add_node("agent", _agent_node)
-        graph.add_node("tools", lambda graph_state: _tool_executor_node(graph_state, force_rebuild))
+        graph.add_node("tools", tools_node)
         graph.add_node("critic", _critic_node)
         graph.set_entry_point("agent")
         graph.add_edge("agent", "tools")

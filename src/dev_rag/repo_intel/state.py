@@ -21,6 +21,7 @@ class AgentState(TypedDict, total=False):
     iteration_count: int
     error_log: list[str]
     root_path: str
+    output_dir: str | None
     mode: RepoIntelMode
     question: str | None
     scan: dict[str, Any]
