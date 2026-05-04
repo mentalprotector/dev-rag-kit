@@ -26,7 +26,7 @@ final_audit_report.json
 chunks.jsonl
 
 # Local tool output
-.reposentinel/
+.repo-check/
 
 # IDE / OS
 .idea/

@@ -1,8 +1,8 @@
 """Minimal library usage example."""
 
-from second_brain.app import build_orchestrator
-from second_brain.config import load_config
-from second_brain.ingestion.pipeline import IngestionPipeline
+from dev_rag.app import build_orchestrator
+from dev_rag.config import load_config
+from dev_rag.ingestion.pipeline import IngestionPipeline
 
 
 def main() -> None:

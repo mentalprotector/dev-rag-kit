@@ -1,10 +1,10 @@
 import json
 from pathlib import Path
 
-from second_brain.evaluation.dataset_factory import EvaluationDatasetFactory, GoldStandardSample
-from second_brain.evaluation.evaluator import RAGASEvaluator
-from second_brain.orchestration.orchestrator import RAGResponse
-from second_brain.retrieval.models import RetrievalResult
+from dev_rag.evaluation.dataset_factory import EvaluationDatasetFactory, GoldStandardSample
+from dev_rag.evaluation.evaluator import RAGASEvaluator
+from dev_rag.orchestration.orchestrator import RAGResponse
+from dev_rag.retrieval.models import RetrievalResult
 
 
 class FakeOrchestrator:

@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from second_brain.cli import build_parser
-from second_brain.config import load_config
-from second_brain.ingestion.schemas import Document, DocumentChunk
-from second_brain.retrieval.manifest import load_chunk_manifest
+from dev_rag.cli import build_parser
+from dev_rag.config import load_config
+from dev_rag.ingestion.schemas import Document, DocumentChunk
+from dev_rag.retrieval.manifest import load_chunk_manifest
 
 
 def test_unified_cli_parser_supports_e2e_command() -> None:

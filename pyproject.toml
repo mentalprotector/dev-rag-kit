@@ -3,7 +3,7 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "second-brain-for-devs"
+name = "dev-rag-kit"
 version = "0.1.0"
 description = "Reusable local RAG toolkit and repository intelligence CLI for developer documentation."
 requires-python = ">=3.10"
@@ -36,13 +36,13 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/mentalprotector/second-brain-for-devs"
-Repository = "https://github.com/mentalprotector/second-brain-for-devs"
-Issues = "https://github.com/mentalprotector/second-brain-for-devs/issues"
+Homepage = "https://github.com/mentalprotector/dev-rag-kit"
+Repository = "https://github.com/mentalprotector/dev-rag-kit"
+Issues = "https://github.com/mentalprotector/dev-rag-kit/issues"
 
 [project.scripts]
-second-brain = "second_brain.cli:main"
-repo-sentinel = "second_brain.repo_intel.cli:main"
+dev-rag = "dev_rag.cli:main"
+repo-check = "dev_rag.repo_intel.cli:main"
 
 [project.optional-dependencies]
 dev = [

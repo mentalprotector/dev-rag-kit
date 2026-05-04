@@ -1,6 +1,6 @@
-from second_brain.orchestration.orchestrator import RAGOrchestrator
-from second_brain.orchestration.prompt_manager import PromptManager
-from second_brain.retrieval.models import RetrievalResult
+from dev_rag.orchestration.orchestrator import RAGOrchestrator
+from dev_rag.orchestration.prompt_manager import PromptManager
+from dev_rag.retrieval.models import RetrievalResult
 
 
 class FakeRetrievalPipeline:

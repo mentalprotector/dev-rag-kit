@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from second_brain.repo_intel.reports import (
+from dev_rag.repo_intel.reports import (
     ProjectProfile,
     SecurityFinding,
     render_project_brief,
@@ -70,7 +70,7 @@ def test_render_security_audit_includes_summary_findings_and_scan_context() -> N
     assert "Is .env excluded from distribution artifacts?" in markdown
 
 
-def test_write_reports_creates_reposentinel_artifacts(tmp_path: Path) -> None:
+def test_write_reports_creates_repo_check_artifacts(tmp_path: Path) -> None:
     finding = SecurityFinding(id="f1", title="Informational note")
 
     paths = write_reports(
@@ -84,4 +84,4 @@ def test_write_reports_creates_reposentinel_artifacts(tmp_path: Path) -> None:
     assert paths["security_audit"].read_text(encoding="utf-8") == "# Audit\n"
     findings_payload = json.loads(paths["findings_json"].read_text(encoding="utf-8"))
     assert findings_payload[0]["id"] == "f1"
-    assert paths["findings_json"].parent == tmp_path / ".reposentinel"
+    assert paths["findings_json"].parent == tmp_path / ".repo-check"

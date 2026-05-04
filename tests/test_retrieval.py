@@ -1,10 +1,10 @@
 from datetime import UTC, datetime
 from uuid import uuid4
 
-from second_brain.ingestion.schemas import DocumentChunk
-from second_brain.retrieval.hybrid_search import HybridSearchEngine
-from second_brain.retrieval.models import RetrievalResult
-from second_brain.retrieval.pipeline import RetrievalPipeline
+from dev_rag.ingestion.schemas import DocumentChunk
+from dev_rag.retrieval.hybrid_search import HybridSearchEngine
+from dev_rag.retrieval.models import RetrievalResult
+from dev_rag.retrieval.pipeline import RetrievalPipeline
 
 
 class FakeVectorStore:

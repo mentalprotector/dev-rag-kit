@@ -1,6 +1,6 @@
-# Using Second Brain for Devs as a Reusable Module
+# Using Dev RAG Kit as a Reusable Module
 
-`second-brain-for-devs` can be used in two ways:
+`dev-rag-kit` can be used in two ways:
 
 - as a CLI toolkit for document RAG and repository analysis;
 - as a Python library embedded into another project.
@@ -36,18 +36,18 @@ pip install -e ".[web]"
 Document RAG:
 
 ```bash
-second-brain status
-second-brain doctor
-second-brain ingest docs/example.md
-second-brain ask "What does this document say about deployment?"
-second-brain chat
-second-brain evaluate config/gold_standard.example.json --output evaluation_results.json
+dev-rag status
+dev-rag doctor
+dev-rag ingest docs/example.md
+dev-rag ask "What does this document say about deployment?"
+dev-rag chat
+dev-rag evaluate config/gold_standard.example.json --output evaluation_results.json
 ```
 
 Full E2E run:
 
 ```bash
-second-brain e2e \
+dev-rag e2e \
   --document docs/example.md \
   --question "What is the deployment flow?" \
   --dataset config/gold_standard.example.json \
@@ -57,17 +57,17 @@ second-brain e2e \
 Repository intelligence:
 
 ```bash
-repo-sentinel full /path/to/repo
-repo-sentinel ask /path/to/repo "How do I run this project?"
-repo-sentinel web --host 127.0.0.1 --port 8765
+repo-check full /path/to/repo
+repo-check ask /path/to/repo "How do I run this project?"
+repo-check web --host 127.0.0.1 --port 8765
 ```
 
 ## Library API
 
 ```python
-from second_brain.config import load_config
-from second_brain.ingestion.pipeline import IngestionPipeline
-from second_brain.app import build_orchestrator
+from dev_rag.config import load_config
+from dev_rag.ingestion.pipeline import IngestionPipeline
+from dev_rag.app import build_orchestrator
 
 config = load_config("config/default.yaml")
 
@@ -97,7 +97,7 @@ LLM_MODEL_NAME=google/gemma-4-26b-a4b
 Run:
 
 ```bash
-second-brain doctor
+dev-rag doctor
 ```
 
 before an E2E test.

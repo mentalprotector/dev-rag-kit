@@ -1,6 +1,6 @@
 """Compatibility package for retrieval components."""
 
-from second_brain.retrieval import HybridSearchEngine, RetrievalPipeline, RetrievalResult
+from dev_rag.retrieval import HybridSearchEngine, RetrievalPipeline, RetrievalResult
 
 __all__ = [
     "HybridSearchEngine",

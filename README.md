@@ -1,307 +1,64 @@
-# Second Brain for Devs + Repo Sentinel
+# Dev RAG Kit
 
-Production-oriented local AI engineering playground with two connected parts:
+Reusable Python toolkit for local documentation RAG and lightweight repository inspection.
 
-- **Second Brain for Devs**: RAG pipeline for developer documentation using chunking, embeddings, Qdrant, retrieval, reranking, and evaluation.
-- **Repo Sentinel**: local repository intelligence agent for onboarding, security audit, repository indexing, and Q&A through CLI or browser UI.
+The project is built for local-first developer workflows:
 
-The project is packaged as a reusable Python module. After installation it exposes two console commands:
+- ingest Markdown or text documentation into Qdrant;
+- retrieve relevant chunks with hybrid search;
+- rerank candidates before sending context to an LLM;
+- answer through an OpenAI-compatible local endpoint such as LM Studio;
+- evaluate answer quality with RAGAS;
+- inspect a repository and generate local onboarding/security notes.
+
+## What You Get
+
+### Documentation RAG
+
+- Markdown/text ingestion with semantic-aware chunking.
+- Dense retrieval with Qdrant.
+- Sparse keyword retrieval with BM25.
+- Reciprocal Rank Fusion to merge dense and sparse results.
+- Cross-encoder reranking for final context precision.
+- OpenAI-compatible LLM client for LM Studio or similar local servers.
+- RAGAS evaluation for faithfulness, answer relevance, and context precision.
+- Single CLI for status checks, ingestion, questions, chat, evaluation, and E2E runs.
+
+### Repository Inspection
+
+- Repository file scan with common noisy folders ignored.
+- Manifest parsing for Python, Node, Docker, Compose, and GitHub Actions.
+- Local lexical index for repository Q&A.
+- Secret-pattern scan with redacted evidence.
+- Risky script/config scan.
+- Markdown reports and JSON findings.
+- Optional FastAPI browser UI.
+
+## Install
+
+Python 3.10+ is required.
+
+Minimal install:
 
 ```bash
-second-brain --help
-repo-sentinel --help
+pip install -e .
 ```
 
-Repo Sentinel is the newer agentic layer. It is designed to inspect repositories locally, generate useful reports, and avoid sending source code to cloud services by default.
-
-## What Repo Sentinel Does
-
-Repo Sentinel helps answer two practical questions after cloning or receiving a repository:
-
-- **What is this project and how do I run it?**
-- **Are there obvious local security risks before I spend cloud tokens or deploy anything?**
-
-It provides:
-
-- repository structure scanning;
-- manifest parsing for Python, Node, Docker, docker-compose, and GitHub Actions;
-- local lexical RAG index under `.reposentinel/index/`;
-- Q&A over indexed repository files;
-- secret pattern scanning with redacted evidence;
-- risky script/config pattern scanning;
-- Markdown reports for onboarding and security audit;
-- JSON findings for later automation.
-
-## Quick Start
-
-Create a virtual environment and install the project:
+Full development install:
 
 ```bash
-python -m venv .venv
-.venv\Scripts\activate
 pip install -e ".[all]"
 ```
 
-On Linux/macOS:
+Install only optional groups as needed:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -e ".[all]"
+pip install -e ".[eval]"
+pip install -e ".[web]"
+pip install -e ".[repo-intel]"
 ```
 
-Run Repo Sentinel against a repository:
-
-```bash
-repo-sentinel full C:\dev\some-repo
-```
-
-Ask a question about the repository:
-
-```bash
-repo-sentinel ask C:\dev\some-repo "How do I run this project locally?"
-```
-
-Use the document RAG toolkit:
-
-```bash
-docker compose up -d qdrant
-second-brain doctor
-second-brain ingest examples/example.md
-second-brain ask "How is the Example Service deployed?"
-```
-
-## Web UI
-
-Start the browser UI locally:
-
-```bash
-repo-sentinel web --host 127.0.0.1 --port 8765
-```
-
-Open:
-
-```text
-http://127.0.0.1:8765
-```
-
-To run on a server and open from your main PC:
-
-```bash
-repo-sentinel web --host 0.0.0.0 --port 8765
-```
-
-Then open:
-
-```text
-http://SERVER_IP:8765
-```
-
-If the server firewall blocks inbound traffic, open TCP port `8765`.
-
-The UI supports:
-
-- `Index`;
-- `Onboard`;
-- `Audit`;
-- `Full`;
-- `Ask`;
-- loading generated reports from `.reposentinel/`.
-
-## CLI Commands
-
-### Index
-
-Build a local repository index:
-
-```bash
-repo-sentinel index C:\dev\some-repo
-```
-
-Output:
-
-```text
-C:\dev\some-repo\.reposentinel\index\index.json
-```
-
-### Onboard
-
-Generate a project onboarding report:
-
-```bash
-repo-sentinel onboard C:\dev\some-repo
-```
-
-Output:
-
-```text
-C:\dev\some-repo\.reposentinel\project_brief.md
-```
-
-### Audit
-
-Run local security scanners and generate a security report:
-
-```bash
-repo-sentinel audit C:\dev\some-repo
-```
-
-Output:
-
-```text
-C:\dev\some-repo\.reposentinel\security_audit.md
-C:\dev\some-repo\.reposentinel\findings.json
-```
-
-### Full
-
-Run indexing, onboarding, and security audit:
-
-```bash
-repo-sentinel full C:\dev\some-repo
-```
-
-### Ask
-
-Ask a question using the local repository index:
-
-```bash
-repo-sentinel ask C:\dev\some-repo "Where is the application entrypoint?"
-```
-
-If the index is missing, run:
-
-```bash
-repo-sentinel index C:\dev\some-repo
-```
-
-You can force rebuild:
-
-```bash
-repo-sentinel ask C:\dev\some-repo "How do I run tests?" --force
-```
-
-## Generated Artifacts
-
-Repo Sentinel writes local output into the inspected repository:
-
-```text
-.reposentinel/
-  index/
-    index.json
-  project_brief.md
-  security_audit.md
-  findings.json
-```
-
-These files are safe to delete and regenerate.
-
-Recommended `.gitignore` entry for target repositories:
-
-```gitignore
-.reposentinel/
-```
-
-## Architecture
-
-Repo Sentinel is intentionally hybrid:
-
-- deterministic tools collect facts;
-- a LangGraph-compatible supervisor orchestrates workflow steps;
-- local RAG provides repository memory;
-- reports are generated from structured data.
-
-High-level flow:
-
-```text
-CLI / Web UI
-   ↓
-Supervisor Graph
-   ↓
-Repo Scanner
-Manifest Parser
-Local RAG Indexer / Retriever
-Secret Scanner
-Script Risk Scanner
-   ↓
-Critic / Validation
-   ↓
-Markdown + JSON Reports
-```
-
-Current graph state includes:
-
-- `messages`;
-- `plan`;
-- `iteration_count`;
-- `error_log`;
-- `root_path`;
-- `mode`;
-- `question`;
-- `scan`;
-- `profile`;
-- `findings`;
-- `retrieved_context`;
-- `reports`;
-- `status`.
-
-The graph has a hard iteration limit to avoid runaway loops.
-
-## Tools
-
-Repo Sentinel tools are async and Pydantic-validated.
-
-Implemented tools:
-
-- `file_manager`: safe file read/write/list/delete inside a root path;
-- `repo_scanner`: deterministic repository file and directory scan;
-- `manifest_parser`: extracts languages, package managers, scripts, dependencies, and commands;
-- `secret_scanner`: scans for common secrets and redacts evidence;
-- `script_risk_scanner`: detects risky shell, Docker, CI, and config patterns;
-- `rag_indexer`: builds a local text index;
-- `rag_retriever`: performs local lexical retrieval.
-
-The scanners are deliberately boring and deterministic. The agentic layer should reason over facts, not invent facts.
-
-## Security Scanner Coverage
-
-The current security audit checks for:
-
-- AWS-style access keys;
-- GitHub tokens;
-- Slack tokens;
-- private key headers;
-- generic `api_key`, `secret`, `token`, and `password` assignments;
-- `curl | sh`;
-- `wget | bash`;
-- `rm -rf`;
-- `chmod 777`;
-- `sudo`;
-- `eval`;
-- PowerShell `Invoke-Expression`;
-- `Set-ExecutionPolicy Bypass`;
-- Docker `--privileged`;
-- Docker socket mounts.
-
-This is not a replacement for a full SAST/DAST/security review. It is a fast local pre-check.
-
-## Local RAG
-
-Repo Sentinel's local RAG does not require Qdrant or external APIs.
-
-It:
-
-- skips noisy directories such as `.git`, `.venv`, `node_modules`, `dist`, `build`, `__pycache__`, `.pytest_cache`, and `.reposentinel/index`;
-- chunks text files;
-- writes a JSON index;
-- uses BM25 if `rank-bm25` is installed;
-- falls back to token-overlap scoring.
-
-This is enough for repository Q&A and report context without spending cloud tokens.
-
-## Second Brain RAG
-
-The original Second Brain pipeline is still available.
+## External Services
 
 Start Qdrant:
 
@@ -309,89 +66,235 @@ Start Qdrant:
 docker compose up -d qdrant
 ```
 
-Ingest a Markdown or text document:
+Run LM Studio or another OpenAI-compatible server and expose `/v1`.
 
-```bash
-second-brain ingest path/to/document.md
+Example `.env`:
+
+```env
+QDRANT_URL=http://localhost:6333
+QDRANT_COLLECTION=dev_rag_docs
+EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+LLM_API_BASE_URL=http://localhost:1234/v1
+LLM_MODEL_NAME=google/gemma-4-26b-a4b
+CHUNK_MANIFEST_PATH=data/chunks.jsonl
 ```
 
-Unified CLI for the original RAG workflow:
+Check connectivity:
 
 ```bash
-second-brain status
-second-brain doctor
-second-brain ingest path/to/document.md
-second-brain ask "What is this document about?"
+dev-rag doctor
+```
+
+## CLI Usage
+
+### Documentation RAG
+
+Show current config:
+
+```bash
+dev-rag status
+```
+
+Ingest a document:
+
+```bash
+dev-rag ingest examples/example.md
+```
+
+Ask one question:
+
+```bash
+dev-rag ask "How is the Example Service deployed?"
+```
+
+Open an interactive loop:
+
+```bash
+dev-rag chat
+```
+
+Run evaluation:
+
+```bash
+dev-rag evaluate examples/gold_standard.json --output evaluation_results.json
+```
+
+Run the full flow:
+
+```bash
+dev-rag e2e \
+  --document examples/example.md \
+  --question "How is the Example Service deployed?" \
+  --dataset examples/gold_standard.json \
+  --output final_audit_report.json
+```
+
+### Repository Check
+
+Index a repository:
+
+```bash
+repo-check index /path/to/repo
+```
+
+Generate onboarding notes:
+
+```bash
+repo-check onboard /path/to/repo
+```
+
+Run local security checks:
+
+```bash
+repo-check audit /path/to/repo
+```
+
+Run index, onboarding, and audit together:
+
+```bash
+repo-check full /path/to/repo
+```
+
+Ask a repository question:
+
+```bash
+repo-check ask /path/to/repo "How do I run tests?"
+```
+
+Start the optional browser UI:
+
+```bash
+repo-check web --host 127.0.0.1 --port 8765
 ```
 
 ## Library Usage
 
 ```python
-from second_brain.app import build_orchestrator
-from second_brain.config import load_config
-from second_brain.ingestion.pipeline import IngestionPipeline
+from dev_rag.app import build_orchestrator
+from dev_rag.config import load_config
+from dev_rag.ingestion.pipeline import IngestionPipeline
 
 config = load_config("config/default.yaml")
-IngestionPipeline(config).ingest_file("examples/example.md")
-response = build_orchestrator(config).answer("How is the service deployed?")
 
+uploaded_chunks = IngestionPipeline(config).ingest_file("examples/example.md")
+orchestrator = build_orchestrator(config)
+response = orchestrator.answer("How is the Example Service deployed?")
+
+print(uploaded_chunks)
 print(response.answer)
 ```
 
-## Project Structure
+## Architecture
 
 ```text
-src/
-  second_brain/
-    ingestion/           # Document schemas, chunking, embeddings, Qdrant upload
-    retrieval/           # Hybrid retrieval, reranking, vector store abstractions
-    orchestration/       # RAG orchestration and LLM client
-    evaluation/          # RAG evaluation helpers
-    repo_intel/
-      cli.py             # Repo Sentinel CLI
-      graph.py           # LangGraph-compatible supervisor
-      state.py           # AgentState
-      web.py             # FastAPI browser UI
-      rag/               # Local repository indexer/retriever
-      reports/           # Markdown/JSON report generation
-      tools/             # Deterministic async tools and scanners
-tests/
-  test_repo_intel_*.py
+Document files
+  -> ingestion
+  -> chunk manifest + Qdrant
+  -> hybrid retrieval
+  -> cross-encoder reranking
+  -> prompt construction
+  -> local OpenAI-compatible LLM
+  -> answer
+  -> optional RAGAS evaluation
 ```
 
-## Development
+Main package layout:
 
-Run tests:
+```text
+src/dev_rag/
+  ingestion/       schemas, chunking, embeddings, Qdrant upload
+  retrieval/       BM25, Qdrant wrapper, RRF fusion, reranker
+  orchestration/   prompt manager, LLM client, RAG orchestrator
+  evaluation/      gold dataset loader and RAGAS evaluator
+  repo_intel/      repository scan, index, reports, optional web UI
+```
+
+Compatibility wrappers are kept under `src/ingestion`, `src/retrieval`, `src/orchestration`, and `src/evaluation` for older imports.
+
+## Configuration
+
+Default config lives in `config/default.yaml` and expands environment variables.
+
+Important variables:
+
+- `QDRANT_URL`
+- `QDRANT_COLLECTION`
+- `EMBEDDING_MODEL`
+- `CHUNK_SIZE`
+- `CHUNK_OVERLAP`
+- `CHUNK_MANIFEST_PATH`
+- `LLM_API_BASE_URL`
+- `LLM_MODEL_NAME`
+- `LLM_TIMEOUT_SECONDS`
+
+Use `.env.example` as the template for local `.env`.
+
+## Evaluation Dataset Format
+
+JSON:
+
+```json
+[
+  {
+    "question": "How is the service deployed?",
+    "ground_truth": "The service is deployed with Docker Compose.",
+    "context": [
+      "The service is deployed with Docker Compose. Start dependencies first."
+    ]
+  }
+]
+```
+
+CSV columns:
+
+```text
+question,ground_truth,context
+```
+
+For multiple expected context snippets in CSV, separate them with `||`.
+
+## Generated Files
+
+Documentation RAG:
+
+```text
+data/chunks.jsonl
+evaluation_results.json
+final_audit_report.json
+```
+
+Repository Check:
+
+```text
+.repo-check/
+  index/index.json
+  project_brief.md
+  security_audit.md
+  findings.json
+```
+
+These outputs are ignored by git and can be regenerated.
+
+## Tests
 
 ```bash
 python -m pytest -q
 ```
 
-Compile-check the Repo Sentinel package:
+Build package artifacts:
 
 ```bash
-python -m compileall -q src\second_brain\repo_intel main.py
+python -m build
 ```
 
-Run the full Repo Sentinel workflow against this repository:
+## Limitations
 
-```bash
-repo-sentinel full C:\dev\seniorAIeng
-```
-
-## Current Limitations
-
-- `ask` currently uses local lexical retrieval, not embeddings.
+- PDF and code-aware loaders are not implemented yet; ingestion currently targets Markdown and text.
+- Repository Q&A uses a local lexical index, not the Qdrant pipeline.
 - Security scanning is pattern-based and can produce false positives.
-- The web UI runs tasks request-by-request and does not yet stream logs.
-- There is no authentication on the web UI yet. Do not expose it directly to the public internet.
-- Destructive tool actions should stay behind an approval gate before adding them to the UI.
+- RAGAS evaluation requires a reachable judge LLM.
+- The optional web UI has no authentication; keep it local or behind your own access control.
 
-## Suggested Next Steps
+## License
 
-- Add authenticated web access for server use.
-- Add streaming run logs in the UI.
-- Add job history under `.reposentinel/runs/`.
-- Add optional embedding-based retrieval with a local model.
-- Add dependency audit integration with explicit approval for network calls.
-- Add Docker and CI-specific scanners as separate modules.
+MIT

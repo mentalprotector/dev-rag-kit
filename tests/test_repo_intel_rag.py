@@ -2,7 +2,7 @@ import asyncio
 import json
 from pathlib import Path
 
-from second_brain.repo_intel.rag import (
+from dev_rag.repo_intel.rag import (
     IndexRepositoryInput,
     RetrieveInput,
     index_repository,

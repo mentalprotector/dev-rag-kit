@@ -1,5 +1,5 @@
 """Compatibility wrapper for ingestion schemas."""
 
-from second_brain.ingestion.schemas import Document, DocumentChunk
+from dev_rag.ingestion.schemas import Document, DocumentChunk
 
 __all__ = ["Document", "DocumentChunk"]

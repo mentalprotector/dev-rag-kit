@@ -1,5 +1,5 @@
 """Compatibility package for orchestration components."""
 
-from second_brain.orchestration import LLMClient, PromptManager, RAGOrchestrator
+from dev_rag.orchestration import LLMClient, PromptManager, RAGOrchestrator
 
 __all__ = ["LLMClient", "PromptManager", "RAGOrchestrator"]

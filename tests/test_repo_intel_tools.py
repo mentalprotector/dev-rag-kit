@@ -4,7 +4,7 @@ import asyncio
 import json
 from pathlib import Path
 
-from second_brain.repo_intel.tools.file_manager import (
+from dev_rag.repo_intel.tools.file_manager import (
     DeleteFileRequest,
     ListFilesRequest,
     ReadFileRequest,
@@ -14,10 +14,10 @@ from second_brain.repo_intel.tools.file_manager import (
     read_file,
     write_file,
 )
-from second_brain.repo_intel.tools.manifest_parser import ManifestParseRequest, parse_manifests
-from second_brain.repo_intel.tools.repo_scanner import RepoScanRequest, scan_repo
-from second_brain.repo_intel.tools.script_risk_scanner import RiskScanRequest, scan_script_risks
-from second_brain.repo_intel.tools.secret_scanner import SecretScanRequest, scan_secrets
+from dev_rag.repo_intel.tools.manifest_parser import ManifestParseRequest, parse_manifests
+from dev_rag.repo_intel.tools.repo_scanner import RepoScanRequest, scan_repo
+from dev_rag.repo_intel.tools.script_risk_scanner import RiskScanRequest, scan_script_risks
+from dev_rag.repo_intel.tools.secret_scanner import SecretScanRequest, scan_secrets
 
 
 def run(coro):
@@ -52,15 +52,15 @@ def test_repo_scanner_ignores_common_generated_directories(tmp_path: Path) -> No
     (tmp_path / "src" / "app.py").write_text("print('x')", encoding="utf-8")
     (tmp_path / "node_modules").mkdir()
     (tmp_path / "node_modules" / "pkg.js").write_text("ignored", encoding="utf-8")
-    (tmp_path / ".reposentinel").mkdir()
-    (tmp_path / ".reposentinel" / "index").mkdir()
-    (tmp_path / ".reposentinel" / "index" / "data").write_text("ignored", encoding="utf-8")
+    (tmp_path / ".repo-check").mkdir()
+    (tmp_path / ".repo-check" / "index").mkdir()
+    (tmp_path / ".repo-check" / "index" / "data").write_text("ignored", encoding="utf-8")
 
     result = run(scan_repo(RepoScanRequest(root=str(tmp_path), max_files=10)))
 
     assert [file.path for file in result.files] == ["src/app.py"]
     assert "node_modules" in result.ignored
-    assert ".reposentinel/index" in result.ignored
+    assert ".repo-check/index" in result.ignored
 
 
 def test_manifest_parser_detects_package_managers_scripts_and_dependencies(tmp_path: Path) -> None:
@@ -79,7 +79,7 @@ def test_manifest_parser_detects_package_managers_scripts_and_dependencies(tmp_p
 [project]
 dependencies = ["pydantic>=2"]
 [project.scripts]
-serve = "second_brain.cli:main"
+serve = "dev_rag.cli:main"
 """.strip(),
         encoding="utf-8",
     )

@@ -1,6 +1,6 @@
 qdrant:
   url: ${QDRANT_URL:http://localhost:6333}
-  collection: ${QDRANT_COLLECTION:second_brain_docs}
+  collection: ${QDRANT_COLLECTION:dev_rag_docs}
 
 embedding:
   model_name: ${EMBEDDING_MODEL:sentence-transformers/all-MiniLM-L6-v2}

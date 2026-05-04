@@ -1,38 +1,34 @@
 # GitHub Publishing Checklist
 
-## 1. Create a repository
+## 1. Repository
 
-Create an empty GitHub repository, for example:
+Recommended repository name:
 
 ```text
-second-brain-for-devs
+dev-rag-kit
 ```
 
-Do not add a README, license, or `.gitignore` in GitHub if they already exist locally.
+If the repository already exists under an old name, rename it in GitHub and update the local remote:
 
-## 2. Initialize local git
+```bash
+git remote set-url origin https://github.com/YOUR_USER/dev-rag-kit.git
+```
+
+## 2. Initial publish
 
 ```bash
 git init
 git add .
 git status
 git commit -m "Initial reusable RAG toolkit"
-```
-
-## 3. Connect remote and push
-
-```bash
 git branch -M main
-git remote add origin https://github.com/YOUR_USER/second-brain-for-devs.git
+git remote add origin https://github.com/YOUR_USER/dev-rag-kit.git
 git push -u origin main
 ```
 
-## 4. After push
+## 3. Release checklist
 
-Update `pyproject.toml` URLs from:
-
-```text
-https://github.com/mentalprotector/second-brain-for-devs
-```
-
-to the real repository URL.
+- Keep `.env`, local Qdrant data, evaluation reports, and `.repo-check/` out of git.
+- Verify `pyproject.toml` URLs point to the real repository.
+- Run `python -m pytest -q` before pushing.
+- Build the package with `python -m build` when preparing a release artifact.

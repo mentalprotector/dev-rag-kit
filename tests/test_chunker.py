@@ -1,4 +1,4 @@
-from second_brain.ingestion import Document, RecursiveSemanticChunker
+from dev_rag.ingestion import Document, RecursiveSemanticChunker
 
 
 def test_chunker_preserves_markdown_code_fence() -> None:
