@@ -1,0 +1,16 @@
+[
+  {
+    "question": "What does Qdrant store in this RAG system?",
+    "ground_truth": "Qdrant stores dense vectors with payload metadata for retrieved document chunks.",
+    "context": [
+      "Qdrant stores vector embeddings and payload metadata for each ingested document chunk."
+    ]
+  },
+  {
+    "question": "Why does the retrieval pipeline use reranking?",
+    "ground_truth": "Reranking re-scores the hybrid retrieval candidates with a cross-encoder to improve final precision.",
+    "context": [
+      "The CrossEncoderReranker takes hybrid search results and reorders them using cross-encoder relevance scores."
+    ]
+  }
+]

@@ -1,0 +1,9 @@
+[
+  {
+    "question": "How is the Example Service deployed?",
+    "ground_truth": "The Example Service is deployed with Docker Compose after dependencies are started.",
+    "context": [
+      "The service is deployed with Docker Compose. Start dependencies first, then run the application container."
+    ]
+  }
+]

@@ -1,0 +1,17 @@
+qdrant:
+  url: ${QDRANT_URL:http://localhost:6333}
+  collection: ${QDRANT_COLLECTION:second_brain_docs}
+
+embedding:
+  model_name: ${EMBEDDING_MODEL:sentence-transformers/all-MiniLM-L6-v2}
+  batch_size: 32
+
+chunking:
+  chunk_size: ${CHUNK_SIZE:1200}
+  chunk_overlap: ${CHUNK_OVERLAP:180}
+  manifest_path: ${CHUNK_MANIFEST_PATH:data/chunks.jsonl}
+
+llm:
+  api_base_url: ${LLM_API_BASE_URL:http://localhost:1234/v1}
+  model_name: ${LLM_MODEL_NAME:google/gemma-4-26b-a4b}
+  timeout_seconds: ${LLM_TIMEOUT_SECONDS:60}
