@@ -13,5 +13,5 @@ chunking:
 
 llm:
   api_base_url: ${LLM_API_BASE_URL:http://localhost:1234/v1}
-  model_name: ${LLM_MODEL_NAME:google/gemma-4-26b-a4b}
+  model_name: ${LLM_MODEL_NAME:unsloth/gemma-4-26b-a4b-it}
   timeout_seconds: ${LLM_TIMEOUT_SECONDS:60}
