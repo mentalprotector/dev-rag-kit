@@ -19,12 +19,14 @@ class LLMClient:
     def __init__(
         self,
         api_base_url: str = "http://172.19.0.1:1234/v1",
-        model_name: str = "unsloth/gemma-4-26b-a4b-it",
+        model_name: str | None = None,
         timeout_seconds: float = 60.0,
         api_key: str = "lm-studio",
     ) -> None:
         """Initialize the LM Studio client."""
 
+        if not model_name:
+            raise ValueError("model_name must be provided from configuration")
         self.model_name = model_name
         self.api_base_url = api_base_url
         self._client = OpenAI(

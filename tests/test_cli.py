@@ -41,6 +41,12 @@ def test_config_loads_chunk_manifest_path() -> None:
     assert config.chunking.manifest_path
 
 
+def test_llm_model_is_loaded_from_config() -> None:
+    config = load_config("config/default.yaml")
+
+    assert config.llm.model_name
+
+
 def test_chunk_manifest_roundtrip(tmp_path: Path) -> None:
     document = Document(content="hello world", source="doc.md")
     chunk = DocumentChunk(

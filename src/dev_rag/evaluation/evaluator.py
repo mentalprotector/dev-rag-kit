@@ -117,11 +117,14 @@ class RAGASEvaluator:
             ) from exc
 
         llm_config = self.orchestrator.llm_client
+        model_name = getattr(llm_config, "model_name", None)
+        if not model_name:
+            raise RuntimeError("RAGAS judge model is missing from LLM client configuration")
         judge_llm = LangchainLLMWrapper(
             ChatOpenAI(
                 base_url=getattr(llm_config, "api_base_url", "http://localhost:1234/v1"),
                 api_key="lm-studio",
-                model=getattr(llm_config, "model_name", "unsloth/gemma-4-26b-a4b-it"),
+                model=model_name,
                 temperature=0,
             )
         )

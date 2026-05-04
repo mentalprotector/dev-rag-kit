@@ -41,7 +41,7 @@ class LLMConfig(BaseModel):
     """OpenAI-compatible LLM API settings."""
 
     api_base_url: HttpUrl = Field(default="http://localhost:1234/v1")
-    model_name: str = Field(default="unsloth/gemma-4-26b-a4b-it", min_length=1)
+    model_name: str = Field(min_length=1)
     timeout_seconds: float = Field(default=60.0, gt=0)
 
 
