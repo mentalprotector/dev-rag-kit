@@ -32,7 +32,7 @@ git push -u origin main
 Update `pyproject.toml` URLs from:
 
 ```text
-https://github.com/your-org/second-brain-for-devs
+https://github.com/mentalprotector/second-brain-for-devs
 ```
 
 to the real repository URL.
